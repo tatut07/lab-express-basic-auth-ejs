@@ -1,13 +1,10 @@
 const router = require("express").Router();
 const User = require("../models/User.model");
 const bcrypt = require("bcryptjs");
+const { isLoggedIn, isLoggedOut } = require("../middleware/route-guard.js");
 
 /* GET home page */
 router.get("/", (req, res, next) => {
-  // let isConnected = false;
-  // if (req.session.user) {
-  //   isConnected = true;
-  // }
   res.render("index");
 });
 
@@ -46,7 +43,7 @@ router.post("/login", async (req, res) => {
     if (bcrypt.compareSync(password, currentUser.password)) {
       console.log("Correct password");
       req.session.user = currentUser;
-      res.redirect("profile");
+      res.redirect("/profile");
     } else {
       res.render("login", {
         errorMessage: "Incorrect password !!!",
@@ -56,13 +53,18 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.get("/profile", (req, res) => {
+router.get("/profile", isLoggedIn, (req, res) => {
   console.log("SESSION =====> ", req.session);
-  if (req.session.user) {
-    res.render("profile", { user: req.session.user, isConnected: true });
-  } else {
+  res.render("profile", { user: req.session.user, isConnected: true });
+});
+
+router.get("/logout", (req, res, next) => {
+  req.session.destroy((err) => {
+    if (err) {
+      next(err);
+    }
     res.redirect("login");
-  }
+  });
 });
 
 module.exports = router;
