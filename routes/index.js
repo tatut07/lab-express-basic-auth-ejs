@@ -8,7 +8,9 @@ router.get("/", (req, res, next) => {
   res.render("index");
 });
 
-router.get("/signup", (req, res) => {
+/* SIGN UP page */
+
+router.get("/signup", isLoggedOut, (req, res) => {
   res.render("signup", { isConnected: false });
 });
 
@@ -27,7 +29,9 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-router.get("/login", (req, res) => {
+/*Log in page*/
+
+router.get("/login", isLoggedOut, (req, res) => {
   res.render("login", { isConnected: false });
 });
 
@@ -53,10 +57,14 @@ router.post("/login", async (req, res) => {
   }
 });
 
+/*Profile page*/
+
 router.get("/profile", isLoggedIn, (req, res) => {
   console.log("SESSION =====> ", req.session);
   res.render("profile", { user: req.session.user, isConnected: true });
 });
+
+/*Log out*/
 
 router.get("/logout", (req, res, next) => {
   req.session.destroy((err) => {
@@ -65,6 +73,15 @@ router.get("/logout", (req, res, next) => {
     }
     res.redirect("login");
   });
+});
+
+/*Iteration 3 pages*/
+router.get("/main", isLoggedIn, (req, res) => {
+  res.render("main", { user: req.session.user, isConnected: true });
+});
+
+router.get("/private", isLoggedIn, (req, res) => {
+  res.render("private", { user: req.session.user, isConnected: true });
 });
 
 module.exports = router;

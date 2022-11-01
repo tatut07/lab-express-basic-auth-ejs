@@ -5,6 +5,12 @@ const userSchema = new Schema({
   username: {
     type: String,
     unique: true,
+    //{
+    //   validator: function (v) {
+    //     return (v.unique = true);
+    //   },
+    //   message: (props) => "${props.username} is already taken",
+    // },
     required: true,
     validate: {
       validator: function (v) {
