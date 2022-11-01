@@ -4,9 +4,20 @@ const { Schema, model } = require("mongoose");
 const userSchema = new Schema({
   username: {
     type: String,
-    unique: true
+    unique: true,
+    required: true,
+    validate: {
+      validator: function (v) {
+        return v.length > 3;
+      },
+      message: (props) =>
+        `You username is too short, only ${props.value.length} characters long`,
+    },
   },
-  password: String
+  password: {
+    type: String,
+    required: true,
+  },
 });
 
 const User = model("User", userSchema);
