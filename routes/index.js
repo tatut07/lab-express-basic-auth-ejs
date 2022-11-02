@@ -25,7 +25,12 @@ router.post("/signup", async (req, res) => {
     });
     res.redirect("/login");
   } catch (error) {
-    res.render("signup", { errorMessage: error.message, isConnected: false });
+    if (error.code === 11000) {
+      res.render("signup", {
+        errorMessage: "Username is already in use",
+        isConnected: false,
+      });
+    }
   }
 });
 
